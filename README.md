@@ -1,4 +1,4 @@
-# llama.cpp
+# Alpaca.cpp
 
 [![Actions Status](https://github.com/ggerganov/llama.cpp/workflows/CI/badge.svg)](https://github.com/ggerganov/llama.cpp/actions)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -86,43 +86,13 @@ main: number of tokens in prompt = 15
  29901 -> ':'
 
 sampling parameters: temp = 0.800000, top_k = 40, top_p = 0.950000
+Run a fast ChatGPT-like model locally on your device. The screencast below is not sped up and running on an M2 Macbook Air with 4GB of weights. 
 
 
-Building a website can be done in 10 simple steps:
-1) Select a domain name and web hosting plan
-2) Complete a sitemap
-3) List your products
-4) Write product descriptions
-5) Create a user account
-6) Build the template
-7) Start building the website
-8) Advertise the website
-9) Provide email support
-10) Submit the website to search engines
-A website is a collection of web pages that are formatted with HTML. HTML is the code that defines what the website looks like and how it behaves.
-The HTML code is formatted into a template or a format. Once this is done, it is displayed on the user's browser.
-The web pages are stored in a web server. The web server is also called a host. When the website is accessed, it is retrieved from the server and displayed on the user's computer.
-A website is known as a website when it is hosted. This means that it is displayed on a host. The host is usually a web server.
-A website can be displayed on different browsers. The browsers are basically the software that renders the website on the user's screen.
-A website can also be viewed on different devices such as desktops, tablets and smartphones.
-Hence, to have a website displayed on a browser, the website must be hosted.
-A domain name is an address of a website. It is the name of the website.
-The website is known as a website when it is hosted. This means that it is displayed on a host. The host is usually a web server.
-A website can be displayed on different browsers. The browsers are basically the software that renders the website on the user’s screen.
-A website can also be viewed on different devices such as desktops, tablets and smartphones. Hence, to have a website displayed on a browser, the website must be hosted.
-A domain name is an address of a website. It is the name of the website.
-A website is an address of a website. It is a collection of web pages that are formatted with HTML. HTML is the code that defines what the website looks like and how it behaves.
-The HTML code is formatted into a template or a format. Once this is done, it is displayed on the user’s browser.
-A website is known as a website when it is hosted
+[![asciicast](screencast.gif)](https://asciinema.org/a/dfJ8QXZ4u978Ona59LPEldtKK)
 
-main: mem per token = 14434244 bytes
-main:     load time =  1332.48 ms
-main:   sample time =  1081.40 ms
-main:  predict time = 31378.77 ms / 61.41 ms per token
-main:    total time = 34036.74 ms
-```
 
-And here is another demo of running both LLaMA-7B and [whisper.cpp](https://github.com/ggerganov/whisper.cpp) on a single M1 Pro MacBook:
+This combines the [LLaMA foundation model](https://github.com/facebookresearch/llama) with an [open reproduction](https://github.com/tloen/alpaca-lora) of [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca) a fine-tuning of the base model to obey instructions (akin to the [RLHF](https://huggingface.co/blog/rlhf) used to train ChatGPT). 
 
 https://user-images.githubusercontent.com/1991296/224442907-7693d4be-acaa-4e01-8b4f-add84093ffff.mp4
 
@@ -173,27 +143,35 @@ Bob: Hello. How may I help you today?
 User: Please tell me the largest city in Europe.
 Bob: Sure. The largest city in Europe is Moscow, the capital of Russia.
 User:"
+## Get started
 
 ```
-Note the use of `--color` to distinguish between user input and generated text.
+git clone https://github.com/antimatter15/alpaca.cpp
+cd alpaca.cpp
 
-![image](https://user-images.githubusercontent.com/1991296/224575029-2af3c7dc-5a65-4f64-a6bb-517a532aea38.png)
-
-### Android
-
-You can easily run `llama.cpp` on Android device with [termux](https://play.google.com/store/apps/details?id=com.termux).
-First, obtain the [Android NDK](https://developer.android.com/ndk) and then build with CMake:
+make chat
+./chat
 ```
-$ mkdir build-android
-$ cd build-android
-$ export NDK=<your_ndk_directory>
-$ cmake -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-23 -DCMAKE_C_FLAGS=-march=armv8.4a+dotprod ..
-$ make
-```
-Install [termux](https://play.google.com/store/apps/details?id=com.termux) on your device and run `termux-setup-storage` to get access to your SD card.
-Finally, copy the `llama` binary and the model files to your device storage. Here is a demo of an interactive session running on Pixel 5 phone:
 
-https://user-images.githubusercontent.com/271616/225014776-1d567049-ad71-4ef2-b050-55b0b3b9274c.mp4
+You can download the weights for `ggml-alpaca-7b-14.bin` with BitTorrent `magnet:?xt=urn:btih:5aaceaec63b03e51a98f04fd5c42320b2a033010&dn=ggml-alpaca-7b-q4.bin&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopentracker.i2p.rocks%3A6969%2Fannounce`
+
+
+Alternatively you can download them with IPFS.
+
+```
+# any of these will work
+wget -O ggml-alpaca-7b-q4.bin -c https://gateway.estuary.tech/gw/ipfs/QmQ1bf2BTnYxq73MFJWu1B7bQ2UD6qG7D7YDCxhTndVkPC
+wget -O ggml-alpaca-7b-q4.bin -c https://ipfs.io/ipfs/QmQ1bf2BTnYxq73MFJWu1B7bQ2UD6qG7D7YDCxhTndVkPC
+wget -O ggml-alpaca-7b-q4.bin -c https://cloudflare-ipfs.com/ipfs/QmQ1bf2BTnYxq73MFJWu1B7bQ2UD6qG7D7YDCxhTndVkPC
+```
+
+Save the `ggml-alpaca-7b-14.bin` file in the same directory as your `./chat` executable. 
+
+The weights are based on the published fine-tunes from `alpaca-lora`, converted back into a pytorch checkpoint with a [modified script](https://github.com/tloen/alpaca-lora/pull/19) and then quantized with llama.cpp the regular way. 
+
+## Credit
+
+This combines [Facebook's LLaMA](https://github.com/facebookresearch/llama), [Stanford Alpaca](https://crfm.stanford.edu/2023/03/13/alpaca.html), [alpaca-lora](https://github.com/tatsu-lab/stanford_alpaca) (which uses [Jason Phang's implementation of LLaMA](https://github.com/huggingface/transformers/pull/21955) on top of Hugging Face Transformers), and a modified version of [llama.cpp](https://github.com/ggerganov/llama.cpp) by Georgi Gerganov. The chat implementation is based on Matvey Soloviev's [Interactive Mode](https://github.com/ggerganov/llama.cpp/pull/61) for llama.cpp. Inspired by [Simon Willison's](https://til.simonwillison.net/llms/llama-7b-m2) getting started guide for LLaMA.
 
 ### Docker
 
@@ -227,16 +205,10 @@ or with light image:
 docker run -v /llama/models:/models ghcr.io/ggerganov/llama.cpp:light -m /models/7B/ggml-model-q4_0.bin -p "Building a website can be done in 10 simple steps:" -n 512
 ```
 
-## Limitations
+## Disclaimer
 
-- We don't know yet how much the quantization affects the quality of the generated text
-- Probably the token sampling can be improved
-- The Accelerate framework is actually currently unused since I found that for tensor shapes typical for the Decoder,
-  there is no benefit compared to the ARM_NEON intrinsics implementation. Of course, it's possible that I simply don't
-  know how to utilize it properly. But in any case, you can even disable it with `LLAMA_NO_ACCELERATE=1 make` and the
-  performance will be the same, since no BLAS calls are invoked by the current implementation
+Note that the model weights are only to be used for research purposes, as they are derivative of LLaMA, and uses the published instruction data from the Stanford Alpaca project which is generated by OpenAI, which itself disallows the usage of its outputs to train competing models. 
 
-### Contributing
 
 - Contributors can open PRs
 - Collaborators can push to branches in the `llama.cpp` repo and merge PRs into the `master` branch
