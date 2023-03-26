@@ -1053,7 +1053,12 @@ int main(int argc, char ** argv) {
                     if (n_read > 0 && buf[n_read-1]=='\\') {
                         another_line = true;
                         buf[n_read-1] = '\n';                        
-                    } else {
+                    } else 
+                    if (n_read > 0 && buf[n_read-1]=='$') {
+                        another_line = false;
+                        buf = buf.substr(0, n_read-1);
+                    } else
+                    {
                         another_line = false;
                         buf += '\n';
                     }
