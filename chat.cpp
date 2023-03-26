@@ -10,6 +10,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
 #include <signal.h>
@@ -1041,25 +1042,24 @@ int main(int argc, char ** argv) {
                 bool another_line=true;
                 while (another_line) {
                     fflush(stdout);
-                    char buf[256] = {0};
+                    std::string buf;
                     int n_read;
                     if(params.use_color) printf(ANSI_BOLD ANSI_COLOR_GREEN);
-                    if (scanf("%255[^\n]%n%*c", buf, &n_read) <= 0) {
-                        // presumable empty line, consume the newline
-                        if (scanf("%*c") <= 0) { /*ignore*/ }
-                        n_read=0;
-                    }
+                    
+                    std::getline(std::cin, buf);
+                    n_read = buf.size();
                     if(params.use_color) printf(ANSI_COLOR_RESET);
 
                     if (n_read > 0 && buf[n_read-1]=='\\') {
                         another_line = true;
-                        buf[n_read-1] = '\n';
-                        buf[n_read] = 0;
+                        buf[n_read-1] = '\n';                        
                     } else {
                         another_line = false;
-                        buf[n_read] = '\n';
-                        buf[n_read+1] = 0;
+                        buf += '\n';
                     }
+
+                    if (std::cin.eof())
+                        another_line = false;
 
                     std::vector<gpt_vocab::id> line_inp = ::llama_tokenize(vocab, buf, false);
                     embd_inp.insert(embd_inp.end(), line_inp.begin(), line_inp.end());
