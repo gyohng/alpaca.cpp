@@ -1068,6 +1068,10 @@ int main(int argc, char ** argv) {
                     remaining_tokens -= prompt_inp.size() + line_inp.size() + response_inp.size();
 
                     input_noecho = true; // do not echo this again
+                    
+                    if (another_line) {
+                        printf(". ");
+                    }
                 }
 
                 is_interacting = false;
