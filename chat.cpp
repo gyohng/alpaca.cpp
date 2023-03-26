@@ -10,6 +10,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
 #include <signal.h>
@@ -32,8 +33,8 @@
 static const std::map<int, int> LLAMA_N_PARTS = {
     { 4096, 1 },
     { 5120, 1 },
-    { 6656, 4 },
-    { 8192, 8 },
+    { 6656, 1 },
+    { 8192, 1 },
 };
 
 // default hparams (LLaMA 7B)
@@ -130,16 +131,16 @@ bool llama_model_load(const std::string & fname, llama_model & model, gpt_vocab 
         n_ff = ((2*(4*hparams.n_embd)/3 + hparams.n_mult - 1)/hparams.n_mult)*hparams.n_mult;
         n_parts = LLAMA_N_PARTS.at(hparams.n_embd);
 
-        // fprintf(stderr, "%s: n_vocab = %d\n", __func__, hparams.n_vocab);
-        // fprintf(stderr, "%s: n_ctx   = %d\n", __func__, hparams.n_ctx);
-        // fprintf(stderr, "%s: n_embd  = %d\n", __func__, hparams.n_embd);
-        // fprintf(stderr, "%s: n_mult  = %d\n", __func__, hparams.n_mult);
-        // fprintf(stderr, "%s: n_head  = %d\n", __func__, hparams.n_head);
-        // fprintf(stderr, "%s: n_layer = %d\n", __func__, hparams.n_layer);
-        // fprintf(stderr, "%s: n_rot   = %d\n", __func__, hparams.n_rot);
-        // fprintf(stderr, "%s: f16     = %d\n", __func__, hparams.f16);
-        // fprintf(stderr, "%s: n_ff    = %d\n", __func__, n_ff);
-        // fprintf(stderr, "%s: n_parts = %d\n", __func__, n_parts);
+        fprintf(stderr, "%s: n_vocab = %d\n", __func__, hparams.n_vocab);
+        fprintf(stderr, "%s: n_ctx   = %d\n", __func__, hparams.n_ctx);
+        fprintf(stderr, "%s: n_embd  = %d\n", __func__, hparams.n_embd);
+        fprintf(stderr, "%s: n_mult  = %d\n", __func__, hparams.n_mult);
+        fprintf(stderr, "%s: n_head  = %d\n", __func__, hparams.n_head);
+        fprintf(stderr, "%s: n_layer = %d\n", __func__, hparams.n_layer);
+        fprintf(stderr, "%s: n_rot   = %d\n", __func__, hparams.n_rot);
+        fprintf(stderr, "%s: f16     = %d\n", __func__, hparams.f16);
+        fprintf(stderr, "%s: n_ff    = %d\n", __func__, n_ff);
+        fprintf(stderr, "%s: n_parts = %d\n", __func__, n_parts);
     }
 
     // load vocab
@@ -1032,14 +1033,30 @@ int main(int argc, char ** argv) {
                 bool another_line=true;
                 while (another_line) {
                     fflush(stdout);
-                    char buf[256] = {0};
+                    char buf[2552];
                     int n_read;
                     if(params.use_color) printf(ANSI_BOLD ANSI_COLOR_GREEN);
-                    if (scanf("%255[^\n]%n%*c", buf, &n_read) <= 0) {
-                        // presumable empty line, consume the newline
-                        if (scanf("%*c") <= 0) { /*ignore*/ }
-                        n_read=0;
+                    // if (scanf("%2550[^\n]%n%*c", buf, &n_read) <= 0) {
+                    //     // presumable empty line, consume the newline
+                    //     if (scanf("%*c") <= 0) { /*ignore*/ }
+                    //     n_read=0;
+                    // }
+                    // readline from stdin into buf, check if EOF
+                    if (fgets(buf, 2550, stdin) == NULL) {
+                        // EOF, exit
+                        printf("\n");
+                        return 0;
                     }
+                    
+                    // remove newline character if present
+                    if (buf[0] && buf[strlen(buf)-1] == '\n') {
+                        buf[strlen(buf)-1] = '\0';
+                    }
+
+                    n_read = strlen(buf);
+                    
+                    
+                    
                     if(params.use_color) printf(ANSI_COLOR_RESET);
 
                     if (n_read > 0 && buf[n_read-1]=='\\') {
